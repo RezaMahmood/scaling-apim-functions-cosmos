@@ -20,6 +20,9 @@ param functionAppName string = '${deploymentPrefix}-func'
 param appServicePlanName string = '${deploymentPrefix}-plan'
 param functionStorageAccountName string = '${deploymentPrefix}st'
 
+var privateEndpointAppDnsZoneName = 'privatelink.azurewebsites.net'
+var privateEndpointAppName = '${functionAppName}-private-endpoint'
+
 var appInsightsName = '${deploymentPrefix}-appinsights'
 var privateStorageFileDnsZoneName = 'privatelink.file.${environment().suffixes.storage}'
 var privateEndpointStorageFileName = '${storageAccount.name}-file-private-endpoint'
@@ -111,6 +114,11 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
 }
 
 // Private DNS Zones
+resource appDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: privateEndpointAppDnsZoneName
+  location: 'global'
+}
+
 resource storageFileDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: privateStorageFileDnsZoneName
   location: 'global'
@@ -132,6 +140,18 @@ resource storageTableDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 }
 
 // Private DNS Zone Links
+resource appDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+  parent: appDnsZone
+  name: '${appDnsZone.name}-link'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: vnetId
+    }
+  }
+}
+
 resource storageFileDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: storageFileDnsZone
   name: '${storageFileDnsZone.name}-link'
@@ -181,6 +201,21 @@ resource storageQueueDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetwo
 }
 
 // -- Private DNS Zone Groups --
+resource appPrivateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
+  parent: appPrivateEndpoint
+  name: 'appPrivateDnsZoneGroup'
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'config'
+        properties: {
+          privateDnsZoneId: appDnsZone.id
+        }
+      }
+    ]
+  }
+}
+
 resource storageFilePrivateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-02-01' = {
   parent: storageFilePrivateEndpoint
   name: 'filePrivateDnsZoneGroup'
@@ -242,6 +277,27 @@ resource storageQueuePrivateDnsZoneGroup 'Microsoft.Network/privateEndpoints/pri
 }
 
 // Private Endpoints
+resource appPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = {
+  name: privateEndpointAppName
+  location: location
+  properties: {
+    subnet: {
+      id: privateEndpointSubnetId
+    }
+    privateLinkServiceConnections: [
+      {
+        name: 'MyAppPrivateLinkConnection'
+        properties: {
+          privateLinkServiceId: functionapp.id
+          groupIds: [
+            'sites'
+          ]
+        }
+      }
+    ]
+  }
+}
+
 resource storageFilePrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-03-01' = {
   name: privateEndpointStorageFileName
   location: location
