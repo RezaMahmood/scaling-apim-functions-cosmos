@@ -46,6 +46,13 @@ param functionAppName string = '${deploymentPrefix}-func'
 param appServicePlanName string = '${deploymentPrefix}-plan'
 param functionStorageAccountName string = '${deploymentPrefix}st'
 
+// Cosmos Params
+@maxLength(44)
+@minLength(3)
+param cosmosAccountName string
+param cosmosDatabaseName string
+param cosmosContainerName string
+
 module network './network.bicep' = {
   name: 'myNetworkDeployment'
   params: {
@@ -79,5 +86,17 @@ module functions './function.bicep' = {
     functionStorageAccountName: functionStorageAccountName
     functionPlanOS: functionPlanOS
     deploymentPrefix: deploymentPrefix
+  }
+}
+
+module cosmos './cosmos.bicep' = {
+  name: 'myCosmosDeployment'
+  params: {
+    accountName: cosmosAccountName
+    containerName: cosmosContainerName
+    databaseName: cosmosDatabaseName
+    privateEndpointSubnetId: network.outputs.peSubnetId
+    vnetId: network.outputs.vnetId
+    location: location
   }
 }
