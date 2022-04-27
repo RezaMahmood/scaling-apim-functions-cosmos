@@ -3,6 +3,9 @@ param vnetName string
 @description('Location for all resources.')
 param location string = resourceGroup().location
 
+var defaultrules = json(loadTextContent('./default-nsg.json')).securityRules
+var customrules = []
+
 resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: vnetName
   location: location
@@ -17,6 +20,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         name: 'apim' // APIM subnet
         properties: {
           addressPrefix: '10.0.1.0/24'
+          networkSecurityGroup: {
+            id: apimnsg.id
+          }
         }
       }
       {
@@ -25,6 +31,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
           addressPrefix: '10.0.2.0/24'
           privateEndpointNetworkPolicies: 'Disabled'
           privateLinkServiceNetworkPolicies: 'Enabled'
+          networkSecurityGroup: {
+            id: pensg.id
+          }
         }
       }
       {
@@ -33,6 +42,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
           addressPrefix: '10.0.3.0/24'
           privateEndpointNetworkPolicies: 'Enabled'
           privateLinkServiceNetworkPolicies: 'Enabled'
+          networkSecurityGroup: {
+            id: funcnsg.id
+          }
           delegations: [
             {
               name: 'webapp'
@@ -47,14 +59,28 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   }
 }
 
-//TODO: implement common NSG from file: https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/patterns-shared-variable-file
+//implement common NSG from file: https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/patterns-shared-variable-file
 resource apimnsg 'Microsoft.Network/networkSecurityGroups@2021-05-01' = {
   name: '${vnetName}-apim-nsg-${location}'
   location: location
   properties: {
-    securityRules: [
-      {}
-    ]
+    securityRules: concat(defaultrules, customrules)
+  }
+}
+
+resource funcnsg 'Microsoft.Network/networkSecurityGroups@2021-05-01' = {
+  name: '${vnetName}-func-nsg-${location}'
+  location: location
+  properties: {
+    securityRules: concat(defaultrules, customrules)
+  }
+}
+
+resource pensg 'Microsoft.Network/networkSecurityGroups@2021-05-01' = {
+  name: '${vnetName}-pe-nsg-${location}'
+  location: location
+  properties: {
+    securityRules: concat(defaultrules, customrules)
   }
 }
 
