@@ -37,6 +37,15 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         }
       }
       {
+        name: 'devops' // Devops runner subnet
+        properties: {
+          addressPrefix: '10.0.4.0/24'
+          networkSecurityGroup: {
+            id: devopsnsg.id
+          }
+        }
+      }
+      {
         name: 'func' // FunctionApp Integration subnet
         properties: {
           addressPrefix: '10.0.3.0/24'
@@ -84,7 +93,16 @@ resource pensg 'Microsoft.Network/networkSecurityGroups@2021-05-01' = {
   }
 }
 
+resource devopsnsg 'Microsoft.Network/networkSecurityGroups@2021-05-01' = {
+  name: '${vnetName}-devops-nsg-${location}'
+  location: location
+  properties: {
+    securityRules: concat(defaultrules, customrules)
+  }
+}
+
 output vnetId string = vnet.id
 output apimSubnetId string = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, 'apim')
 output funcSubnetId string = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, 'func')
 output peSubnetId string = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, 'pe')
+output devopsSubnetId string = resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, 'devops')
