@@ -8,6 +8,7 @@
     [Create Github Secrets](https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux#create-github-secrets
     )<br>
     [Test and Verify OpenID Connect Connection](https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux#set-up-azure-login-with-openid-connect-authentication)<br>
+    [Create Github Secrets](https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux#create-github-secrets)<br>
 2. **Use Self hosted runners to deploy into locked down virtual network**
    <br>(https://colinsalmcorner.com/on-demand-ephemeral-self-hosted-runners/)
 
@@ -17,7 +18,7 @@
 
    We want to be able to use Azure credentials without having to maintain secrets or passwords.  This can be achieved using OpenID Connect and Federated Credentials.  This effectively allows a Github repo to authenticate with Azure to retrieve a token with permissions without needing to store passwords in Github.<br><br>
 
-   Run the script - [setup.sh](./setup.sh) and follow the prompts to set up federated credentials which you will then need to store as Repository secrets.<br><br>
+   Run the script ([setup.sh](./setup.sh)) and follow the prompts to set up federated credentials which you will then need to store as Repository secrets.<br><br>
 
    You will need:
    - Azure credentials to log in
@@ -34,4 +35,4 @@ On successful completion of the script you will be presented with the TenantID, 
 If for some reason the script fails, the script will provide the right command to delete/rollback any Service Principal you have created.  The associated Federated Credential will be deleted as well.
 
 ### Future Enhancements
-Integration with Github APIs to automate repo secrets creation (the last step).  A use case is for the fully automated set up and integration for Dev teams using Github and Azure.
+Integration with Github APIs to automate repo secrets creation ([the last step](https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux#create-github-secrets)).  A use case is for the fully automated set up and integration for Dev teams using Github and Azure.
