@@ -17,7 +17,7 @@
 
    We want to be able to use Azure credentials without having to maintain secrets or passwords.  This can be achieved using OpenID Connect and Federated Credentials.  This effectively allows a Github repo to authenticate with Azure to retrieve a token with permissions without needing to store passwords in Github.<br><br>
 
-   Run the script (setup.sh) and follow the prompts to set up federated credentials which you will then need to store as Repository secrets.<br><br>
+   Run the script - [setup.sh](./setup.sh) and follow the prompts to set up federated credentials which you will then need to store as Repository secrets.<br><br>
 
    You will need:
    - Azure credentials to log in
