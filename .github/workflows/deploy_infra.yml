@@ -1,0 +1,26 @@
+name: Deploy Azure infrastructure
+on: workflow_dispatch
+
+permissions:
+      id-token: write
+      contents: read
+      
+jobs: 
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Log into Azure'
+      uses: azure/login@v1
+      with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  
+    - name: 'Deploy Infra'
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ secrets.AZURE_RG }}
+        template: ./infra/bicep/main.bicep
+        parameters: publisherEmail=${{ secrets.APIM_PUBLISHEREMAIL }} publisherName=${{ secrets.APIM_PUBLISHERNAME }} cosmosAccountName=${{ secrets.COSMOS_ACCOUNT }} cosmosDatabaseName=${{ secrets.COSMOS_DATABASE }} cosmosContainerName=${{ secrets.COSMOS_CONTAINER }}
+        failOnStdErr: false
