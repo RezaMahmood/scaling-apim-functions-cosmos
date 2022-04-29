@@ -3,11 +3,11 @@
 ## Objectives:
 
 1. **Configure Github to use Azure credentials**
-    [Generate deployment credentials](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-github-actions?tabs=CLI#generate-deployment-credentials)
-    [Add Federated Credentials](https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux#add-federated-credentials)
+    [Generate deployment credentials](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-github-actions?tabs=CLI#generate-deployment-credentials)<br>
+    [Add Federated Credentials](https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux#add-federated-credentials)<br>
     [Create Github Secrets](https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux#create-github-secrets
-    )
-    [Test and Verify OpenID Connect Connection](https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux#set-up-azure-login-with-openid-connect-authentication)
+    )<br>
+    [Test and Verify OpenID Connect Connection](https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux#set-up-azure-login-with-openid-connect-authentication)<br>
 2. **Use Self hosted runners to deploy into locked down virtual network**
    (https://colinsalmcorner.com/on-demand-ephemeral-self-hosted-runners/)
 
