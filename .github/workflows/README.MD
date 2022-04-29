@@ -32,7 +32,7 @@
 
 <br><br>
 On successful completion of the script you will be presented with the TenantID, ClientID and SubscriptionID that you can add to your Github Repo as Secrets. No passwords or Service Principal secrets required anymore.<br><br>
-If for some reason the script fails, the script will provide the right command to delete/rollback any Service Principal you have created.  The associated Federated Credential will be deleted as well.
+If for some reason the script fails or you wish to delete the SP because you're just testing then the script will provide the right command to delete the Service Principal you have created.  The associated Federated Credential will be deleted as well.
 
 ### Future Enhancements
 Integration with Github APIs to automate repo secrets creation ([the last step](https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-cli%2Clinux#create-github-secrets)).  A use case is for the fully automated set up and integration for Dev teams using Github and Azure.
